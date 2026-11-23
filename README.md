@@ -1,75 +1,69 @@
-# React + TypeScript + Vite
+# Pokémon Music Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend SPA para catalogar as músicas dos jogos de Pokémon. A interface consome a **Pokémon Music API** (desenvolvida na AT1) e realiza o CRUD completo, com feedback visual de carregamento, estado vazio e notificações (toasts).
 
-Currently, two official plugins are available:
+**Tecnologias:** React, TypeScript, Vite, React Router DOM, Tailwind CSS e shadcn/ui (Sonner para os toasts).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- Dashboard com métricas (total de músicas, jogos diferentes e duração total) e tabela de músicas
+- Cadastro e edição de músicas em janela modal (Dialog) com formulário controlado e validação
+- Exclusão com janela de confirmação
+- Estados de carregamento (skeleton), vazio e erro de comunicação
+- Toasts de sucesso e de erro em todas as operações
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Operação | Método | Rota da API    |
+| -------- | ------ | -------------- |
+| Listar   | GET    | `/musicas`     |
+| Criar    | POST   | `/musicas`     |
+| Atualizar | PUT   | `/musicas/:id` |
+| Excluir  | DELETE | `/musicas/:id` |
 
-## Expanding the ESLint configuration
+## Pré-requisitos
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Node.js 22+ e [pnpm](https://pnpm.io)
+- A **Pokémon Music API** em execução (por padrão em `http://localhost:3000`). Consulte o README do repositório da API para subi-la (`pnpm dev` ou `docker compose up -d`).
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Instalação e execução
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+pnpm install
+cp .env.example .env   # ajuste a URL da API, se necessário
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+A aplicação ficará disponível em http://localhost:5173.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Variáveis de ambiente
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Variável       | Descrição                    | Exemplo                 |
+| -------------- | ---------------------------- | ----------------------- |
+| `VITE_API_URL` | URL base da API REST         | `http://localhost:3000` |
 
+### Scripts
+
+| Script         | Função                                   |
+| -------------- | ---------------------------------------- |
+| `pnpm dev`     | Servidor de desenvolvimento              |
+| `pnpm build`   | Checagem de tipos e build de produção    |
+| `pnpm lint`    | Análise estática com ESLint              |
+| `pnpm preview` | Pré-visualiza o build de produção        |
+
+## Estrutura do projeto
+
+```
+src/
+├── components/
+│   ├── ui/                  # Componentes do shadcn/ui
+│   ├── AppLayout.tsx        # Layout compartilhado (barra superior + navegação)
+│   ├── StatsCards.tsx       # Métricas do dashboard
+│   ├── MusicTable.tsx       # Tabela, loading, estado vazio e erro
+│   ├── MusicFormDialog.tsx  # Modal de cadastro/edição
+│   └── DeleteMusicDialog.tsx
+├── lib/                     # Utilitários (utils do shadcn e formatação)
+├── pages/                   # Dashboard, Sobre e 404
+├── services/                # Cliente HTTP da API (fetch)
+├── types/                   # Interfaces TypeScript da entidade
+├── App.tsx                  # Rotas e <Toaster />
+└── main.tsx
 ```
